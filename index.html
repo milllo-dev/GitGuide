@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git 완전 정복 — 초심자를 위한 Git 가이드</title>
+  <meta name="description" content="개발자 지망생을 위한 Git 완전 가이드. 설치부터 브랜치 전략, PR, 협업까지 단계적으로 배워보세요." />
+  <meta property="og:title" content="Git 완전 정복 — 초심자를 위한 Git 가이드" />
+  <meta property="og:description" content="설치부터 실제 협업까지, Git을 처음 배우는 개발자를 위한 가이드입니다." />
+  <meta property="og:type" content="website" />
+
+  <!-- 구글 폰트 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Prism.js (코드 하이라이팅) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- 프로그레스바 -->
+  <div id="progress-bar" role="progressbar" aria-label="페이지 읽기 진행도"></div>
+
+  <!-- 테마 토글 -->
+  <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환">🌙</button>
+
+  <!-- 모바일 햄버거 버튼 -->
+  <button class="menu-toggle" id="menu-toggle" onclick="toggleMobileMenu()" aria-label="메뉴 열기/닫기">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- 사이드바 오버레이 -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- 사이드바 -->
+  <nav class="sidebar" id="sidebar" aria-label="가이드 목차">
+    <div class="sidebar-logo">
+      <!-- Git 로고 SVG -->
+      <svg viewBox="0 0 92 92" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M90.156 41.965L50.036 1.848a5.918 5.918 0 00-8.372 0l-8.328 8.328 10.566 10.566a7.03 7.03 0 017.23 1.684 7.034 7.034 0 011.669 7.277l10.187 10.187a7.028 7.028 0 017.278 1.668 7.04 7.04 0 010 9.951 7.05 7.05 0 01-9.954 0 7.044 7.044 0 01-1.528-7.66L49.802 34.18v24.95a7.04 7.04 0 011.87 1.274 7.04 7.04 0 010 9.95 7.04 7.04 0 01-9.949 0 7.04 7.04 0 010-9.95 7.054 7.054 0 012.088-1.483V33.926a7.031 7.031 0 01-2.088-1.482 7.05 7.05 0 01-1.51-7.694L29.647 14.194.843 42.993a5.918 5.918 0 000 8.372l40.12 40.117a5.918 5.918 0 008.372 0l40.821-40.82a5.919 5.919 0 000-8.697z" fill="#F05133"/>
+      </svg>
+      <div>
+        <div class="sidebar-logo-text">Git 완전 정복</div>
+        <div class="sidebar-logo-sub">초심자를 위한 가이드</div>
+      </div>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="#intro" data-section="intro">
+        <span class="nav-icon">🏠</span> 시작하기
+        <span class="nav-badge">START</span>
+      </a></li>
+      <li><a href="#what-is-git" data-section="what-is-git">
+        <span class="nav-icon">💡</span> Git이란?
+      </a></li>
+      <li><a href="#install" data-section="install">
+        <span class="nav-icon">⬇️</span> Git 설치
+      </a></li>
+      <li><a href="#commands" data-section="commands">
+        <span class="nav-icon">⌨️</span> 기본 커맨드
+      </a></li>
+      <li><a href="#branch-pr" data-section="branch-pr">
+        <span class="nav-icon">🌿</span> 브랜치 &amp; PR
+      </a></li>
+      <li><a href="#local-remote" data-section="local-remote">
+        <span class="nav-icon">☁️</span> 로컬 &amp; 리모트
+      </a></li>
+      <li><a href="#wrap-up" data-section="wrap-up">
+        <span class="nav-icon">🎉</span> 마무리
+      </a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <span class="sidebar-progress-label">0 / 0 완료</span>
+      <span class="sidebar-progress-value">0%</span>
+    </div>
+  </nav>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="main-wrapper">
+    <main class="main-content">
+
+      <!-- ===== 히어로 섹션 ===== -->
+      <section class="hero-section" id="intro">
+        <div class="hero-badge">🎯 개발자 지망생을 위한</div>
+        <h1 class="hero-title">
+          <span>Git</span> 완전 정복
+        </h1>
+        <p class="hero-desc">
+          설치부터 실제 협업까지 — Git을 처음 배우는 분들을 위해<br>
+          단계적으로 알기 쉽게 안내합니다.
+        </p>
+
+        <div class="roadmap">
+          <div class="roadmap-item active">💡 Git이란?</div>
+          <div class="roadmap-arrow">→</div>
+          <div class="roadmap-item active">⬇️ 설치</div>
+          <div class="roadmap-arrow">→</div>
+          <div class="roadmap-item active">⌨️ 기본 명령어</div>
+          <div class="roadmap-arrow">→</div>
+          <div class="roadmap-item active">🌿 브랜치 &amp; PR</div>
+          <div class="roadmap-arrow">→</div>
+          <div class="roadmap-item active">☁️ 로컬 &amp; 리모트</div>
+        </div>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-num">6</div>
+            <div class="hero-stat-label">모듈</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">8</div>
+            <div class="hero-stat-label">핵심 커맨드</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">3</div>
+            <div class="hero-stat-label">실습 과제</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">~2hr</div>
+            <div class="hero-stat-label">예상 소요 시간</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 모듈 1: Git이란? ===== -->
+      <section class="guide-section" id="what-is-git">
+        <div class="section-header">
+          <div class="section-number">1</div>
+          <div>
+            <div class="section-title">Git이란 무엇인가?</div>
+            <div class="section-subtitle">버전 관리 시스템의 개념과 Git이 필요한 이유</div>
+          </div>
+        </div>
+
+        <p>
+          코드를 작성하다 보면 이런 상황을 마주하게 됩니다.
+          <em>"어제 잘 되던 기능이 갑자기 망가졌다. 어떻게 되돌리지?"</em>
+          또는 <em>"팀원이 같은 파일을 수정했는데 누구 코드를 써야 하지?"</em>
+          <strong>Git</strong>은 바로 이런 문제를 해결하기 위해 만들어진 <strong>버전 관리 시스템(VCS, Version Control System)</strong>입니다.
+        </p>
+
+        <div class="tip-box">
+          <div class="box-icon">💡</div>
+          <div class="box-content">
+            <strong>게임 세이브 포인트처럼 생각하세요</strong>
+            <p>RPG 게임에서 중요한 분기점마다 세이브를 해두듯이, Git은 코드의 변경 사항을 단계별로 저장합니다. 언제든지 원하는 시점으로 되돌아갈 수 있고, 여러 경로(브랜치)를 동시에 탐험할 수 있습니다.</p>
+          </div>
+        </div>
+
+        <h2>Git이 해주는 것</h2>
+        <ul>
+          <li><strong>변경 이력 추적</strong> — 누가, 언제, 왜 코드를 수정했는지 기록합니다.</li>
+          <li><strong>이전 버전 복원</strong> — 실수한 코드를 특정 시점으로 되돌릴 수 있습니다.</li>
+          <li><strong>병렬 작업</strong> — 여러 기능을 동시에 독립적으로 개발할 수 있습니다(브랜치).</li>
+          <li><strong>협업</strong> — 여러 사람이 같은 프로젝트에서 충돌 없이 작업할 수 있습니다.</li>
+        </ul>
+
+        <h2>Git vs GitHub — 뭐가 다른가요?</h2>
+        <p>많은 분들이 Git과 GitHub를 혼동합니다. 핵심 차이를 정리하면 다음과 같습니다.</p>
+
+        <table class="kv-table">
+          <thead>
+            <tr><th>구분</th><th>설명</th><th>비유</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Git</td>
+              <td>내 컴퓨터에서 실행되는 버전 관리 도구 (소프트웨어)</td>
+              <td>마이크로소프트 워드 (프로그램 자체)</td>
+            </tr>
+            <tr>
+              <td>GitHub</td>
+              <td>Git 저장소를 인터넷에 올려두고 협업할 수 있는 플랫폼 (서비스)</td>
+              <td>구글 드라이브 (문서를 올려두는 클라우드)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="info-box">
+          <div class="box-icon">ℹ️</div>
+          <div class="box-content">
+            <strong>GitHub 외에도 유사한 플랫폼이 있습니다</strong>
+            <p>GitLab, Bitbucket 등도 동일한 Git 기반의 협업 플랫폼입니다. 이 가이드에서는 가장 많이 쓰이는 GitHub를 기준으로 설명합니다.</p>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <div class="checklist-title">✅ 이해 체크</div>
+          <ul>
+            <li>
+              <input type="checkbox" id="c1-1" />
+              <label for="c1-1">버전 관리 시스템이 왜 필요한지 설명할 수 있다</label>
+            </li>
+            <li>
+              <input type="checkbox" id="c1-2" />
+              <label for="c1-2">Git과 GitHub의 차이를 이해했다</label>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== 모듈 2: 설치 ===== -->
+      <section class="guide-section" id="install">
+        <div class="section-header">
+          <div class="section-number">2</div>
+          <div>
+            <div class="section-title">Git 설치하기</div>
+            <div class="section-subtitle">Windows와 macOS 환경에서의 설치 방법</div>
+          </div>
+        </div>
+
+        <p>Git을 사용하려면 먼저 컴퓨터에 설치해야 합니다. 운영체제에 맞는 탭을 선택해서 진행하세요.</p>
+
+        <div class="tab-group" id="install-tabs">
+          <div class="tab-buttons" role="tablist">
+            <button class="tab-btn active" data-tab="windows" role="tab" aria-selected="true">
+              🪟 Windows
+            </button>
+            <button class="tab-btn" data-tab="macos" role="tab" aria-selected="false">
+              🍎 macOS
+            </button>
+          </div>
+
+          <!-- Windows -->
+          <div class="tab-pane active" data-tab="windows" role="tabpanel">
+            <div class="steps">
+              <div class="step-card">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <div class="step-title">Git for Windows 다운로드</div>
+                  <div class="step-desc">
+                    <a href="https://git-scm.com/download/win" target="_blank" rel="noopener">git-scm.com/download/win</a>에 접속하면 자동으로 최신 버전 다운로드가 시작됩니다. <strong>64-bit Git for Windows Setup</strong>을 선택하세요.
+                  </div>
+                </div>
+              </div>
+              <div class="step-card">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <div class="step-title">설치 프로그램 실행</div>
+                  <div class="step-desc">
+                    다운로드된 <code>.exe</code> 파일을 실행하세요. 대부분의 옵션은 기본값으로 진행해도 됩니다. <strong>"Use Git from the Windows Command Prompt"</strong> 옵션이 선택되어 있는지 확인하세요.
+                  </div>
+                </div>
+              </div>
+              <div class="step-card">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <div class="step-title">Git Bash 확인</div>
+                  <div class="step-desc">
+                    설치 후 시작 메뉴에서 <strong>Git Bash</strong>를 열어보세요. Git Bash는 Windows에서 Unix 방식의 Git 명령어를 사용할 수 있게 해주는 터미널입니다.
+                  </div>
+                </div>
+              </div>
+              <div class="step-card">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <div class="step-title">설치 확인</div>
+                  <div class="step-desc">Git Bash에서 아래 명령어를 입력해 버전을 확인하세요.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-block-header">
+                <span class="code-block-lang">bash</span>
+                <button class="code-copy-btn">📋 복사</button>
+              </div>
+              <pre><code class="language-bash">git --version
+# 출력 예시: git version 2.44.0.windows.1</code></pre>
+            </div>
+
+            <div class="tip-box">
+              <div class="box-icon">💡</div>
+              <div class="box-content">
+                <strong>Windows Terminal도 함께 설치하는 것을 추천합니다</strong>
+                <p>Microsoft Store에서 Windows Terminal을 설치하면 Git Bash, PowerShell, CMD를 하나의 앱에서 편리하게 사용할 수 있습니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- macOS -->
+          <div class="tab-pane" data-tab="macos" role="tabpanel">
+            <p>macOS에서는 두 가지 방법으로 설치할 수 있습니다.</p>
+
+            <div class="accordion">
+              <div class="accordion-item open">
+                <div class="accordion-header" role="button" aria-expanded="true">
+                  <span class="accordion-title">🍺 방법 1: Homebrew로 설치 <span class="badge badge-green">추천</span></span>
+                  <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-body">
+                  <p>Homebrew는 macOS용 패키지 관리자입니다. 없다면 먼저 설치하세요.</p>
+                  <div class="code-block">
+                    <div class="code-block-header">
+                      <span class="code-block-lang">bash</span>
+                      <button class="code-copy-btn">📋 복사</button>
+                    </div>
+                    <pre><code class="language-bash"># Homebrew 설치 (이미 있다면 건너뜀)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Git 설치
+brew install git
+
+# 설치 확인
+git --version</code></pre>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <div class="accordion-header" role="button" aria-expanded="false">
+                  <span class="accordion-title">🛠️ 방법 2: Xcode Command Line Tools</span>
+                  <span class="accordion-chevron">▼</span>
+                </div>
+                <div class="accordion-body">
+                  <p>Homebrew 없이 Apple에서 제공하는 개발 도구 패키지를 통해 설치할 수 있습니다.</p>
+                  <div class="code-block">
+                    <div class="code-block-header">
+                      <span class="code-block-lang">bash</span>
+                      <button class="code-copy-btn">📋 복사</button>
+                    </div>
+                    <pre><code class="language-bash"># Xcode Command Line Tools 설치
+xcode-select --install
+
+# 팝업 창에서 '설치' 클릭 후 완료를 기다림
+# 설치 확인
+git --version</code></pre>
+                  </div>
+                  <p style="margin-top:12px;">터미널은 <strong>Launchpad → 기타 → 터미널</strong> 또는 Spotlight(<code>⌘ + Space</code>)에서 "terminal"을 검색해 실행하세요.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <h2>초기 설정 (필수)</h2>
+        <p>Git을 처음 설치했다면 반드시 이름과 이메일을 설정해야 합니다. 이 정보는 커밋(저장) 기록에 남는 <strong>작성자 정보</strong>입니다.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">bash</span>
+            <button class="code-copy-btn">📋 복사</button>
+          </div>
+          <pre><code class="language-bash"># 이름 설정 (따옴표 안에 본인 이름 입력)
+git config --global user.name "Hong Gildong"
+
+# 이메일 설정 (GitHub에 가입할 이메일 권장)
+git config --global user.email "hong@example.com"
+
+# 설정 확인
+git config --list</code></pre>
+        </div>
+
+        <div class="warn-box">
+          <div class="box-icon">⚠️</div>
+          <div class="box-content">
+            <strong><code>--global</code> 플래그의 의미</strong>
+            <p><code>--global</code>을 붙이면 이 컴퓨터의 모든 Git 프로젝트에 적용됩니다. 특정 프로젝트에만 다른 설정을 쓰고 싶다면 해당 폴더 안에서 <code>--global</code> 없이 명령어를 실행하세요.</p>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <div class="checklist-title">✅ 설치 체크리스트</div>
+          <ul>
+            <li>
+              <input type="checkbox" id="c2-1" />
+              <label for="c2-1"><code>git --version</code>을 실행해서 버전이 출력된다</label>
+            </li>
+            <li>
+              <input type="checkbox" id="c2-2" />
+              <label for="c2-2"><code>user.name</code>을 설정했다</label>
+            </li>
+            <li>
+              <input type="checkbox" id="c2-3" />
+              <label for="c2-3"><code>user.email</code>을 설정했다</label>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== 모듈 3: 기본 커맨드 ===== -->
+      <section class="guide-section" id="commands">
+        <div class="section-header">
+          <div class="section-number">3</div>
+          <div>
+            <div class="section-title">기본 커맨드</div>
+            <div class="section-subtitle">Git을 사용할 때 가장 많이 쓰이는 핵심 명령어들</div>
+          </div>
+        </div>
+
+        <p>Git은 터미널(명령줄)에서 명령어를 입력해서 사용합니다. 처음에는 낯설게 느껴지지만, 몇 가지 핵심 명령어만 익히면 대부분의 작업을 처리할 수 있습니다.</p>
+
+        <h2>Git의 세 가지 영역</h2>
+        <p>Git 명령어를 이해하려면 먼저 Git이 파일을 어떻게 관리하는지 알아야 합니다. Git은 세 가지 영역을 구분해서 파일을 추적합니다.</p>
+
+        <div class="diagram-block">
+          <div class="diagram-title">파일 상태 흐름도</div>
+          <div class="flow-diagram">
+            <div class="flow-box">
+              <div class="flow-box-icon">📝</div>
+              <div class="flow-box-title">Working Directory</div>
+              <div class="flow-box-desc">실제 작업하는 폴더<br>파일을 수정하는 곳</div>
+            </div>
+            <div class="flow-arrow">
+              <div class="flow-arrow-line">→</div>
+              <div class="flow-arrow-label">git add</div>
+            </div>
+            <div class="flow-box highlight">
+              <div class="flow-box-icon">📦</div>
+              <div class="flow-box-title">Staging Area</div>
+              <div class="flow-box-desc">커밋할 파일을<br>선택하는 대기 공간</div>
+            </div>
+            <div class="flow-arrow">
+              <div class="flow-arrow-line">→</div>
+              <div class="flow-arrow-label">git commit</div>
+            </div>
+            <div class="flow-box">
+              <div class="flow-box-icon">🗃️</div>
+              <div class="flow-box-title">Repository</div>
+              <div class="flow-box-desc">커밋이 영구 저장되는<br>Git 저장소</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <div class="box-icon">💡</div>
+          <div class="box-content">
+            <strong>Staging Area가 왜 필요한가요?</strong>
+            <p>파일을 수정할 때 모든 변경사항을 한꺼번에 커밋하지 않아도 됩니다. "이 파일만 오늘 커밋하고 나머지는 내일"처럼, 커밋할 파일을 선별하는 바구니 역할을 Staging Area가 합니다.</p>
+          </div>
+        </div>
+
+        <hr class="divider" />
+        <h2>핵심 명령어 사전</h2>
+
+        <!-- git init -->
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git init</div>
+              <div class="command-short-desc">새 Git 저장소를 초기화합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">현재 폴더를 Git이 추적하는 저장소로 만듭니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">새 프로젝트를 시작할 때 Git 버전 관리를 적용합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">폴더 안에 <code>.git</code> 숨김 폴더가 생성됩니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash">git init
+# 출력: Initialized empty Git repository in /your/path/.git/</code></pre>
+        </div>
+
+        <!-- git status -->
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git status</div>
+              <div class="command-short-desc">현재 저장소의 상태를 확인합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">어떤 파일이 변경되었는지, Staging Area에 무엇이 있는지 보여줍니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">지금 내 작업 상태를 파악하기 위해 가장 자주 사용하는 명령어입니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">추적 중인 파일, 수정된 파일, Staging된 파일 목록이 출력됩니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash">git status
+# 출력 예시:
+# Changes not staged for commit:
+#   modified:   index.html
+# Untracked files:
+#   new-file.js</code></pre>
+        </div>
+
+        <!-- git add -->
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git add</div>
+              <div class="command-short-desc">파일을 Staging Area에 추가합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">변경된 파일을 다음 커밋에 포함시키기 위해 Staging Area에 올립니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">커밋할 파일을 선택합니다. "이 파일의 변경사항을 저장하겠다"는 선언입니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">해당 파일이 <em>staged</em> 상태로 바뀝니다. <code>git status</code>에서 초록색으로 표시됩니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># 특정 파일만 추가
+git add index.html
+
+# 여러 파일 추가
+git add index.html style.css
+
+# 현재 폴더의 모든 변경사항 추가 (주의해서 사용)
+git add .</code></pre>
+        </div>
+        <div class="warn-box">
+          <div class="box-icon">⚠️</div>
+          <div class="box-content">
+            <strong><code>git add .</code>을 무분별하게 쓰지 마세요</strong>
+            <p><code>git add .</code>는 모든 파일을 한꺼번에 추가합니다. API 키, 비밀번호가 담긴 설정 파일이나 불필요한 파일이 포함될 수 있습니다. <code>.gitignore</code> 파일을 설정하거나, 가능하면 파일을 명시적으로 지정하는 습관을 들이세요.</p>
+          </div>
+        </div>
+
+        <!-- git commit -->
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git commit</div>
+              <div class="command-short-desc">Staged 파일들을 저장소에 기록합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">Staging Area의 변경사항을 저장소에 영구 기록합니다. "세이브 포인트"를 만드는 것입니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">작업 단위를 명확히 구분해서 저장합니다. 메시지를 통해 무엇을 했는지 설명합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">새 커밋이 생성됩니다. 고유한 해시(ID)가 부여되며 <code>git log</code>로 확인할 수 있습니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># -m 플래그로 커밋 메시지 작성
+git commit -m "로그인 페이지 UI 추가"
+
+# 출력 예시:
+# [main a3b8c21] 로그인 페이지 UI 추가
+# 2 files changed, 45 insertions(+)</code></pre>
+        </div>
+        <div class="tip-box">
+          <div class="box-icon">💡</div>
+          <div class="box-content">
+            <strong>좋은 커밋 메시지 작성법</strong>
+            <p>커밋 메시지는 "무엇을 했는가"보다 <strong>"왜 했는가"</strong>를 담는 것이 좋습니다. 예시: ✅ "사용자 요청으로 검색 필터 기능 추가" ❌ "코드 수정"</p>
+          </div>
+        </div>
+
+        <!-- git log -->
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git log</div>
+              <div class="command-short-desc">커밋 히스토리를 조회합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">지금까지 만든 커밋들의 목록과 정보를 보여줍니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">과거 작업 이력을 확인하거나 특정 커밋을 찾을 때 사용합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">커밋 해시, 작성자, 날짜, 메시지가 최신 순으로 출력됩니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash">git log
+
+# 한 줄로 간결하게 보기
+git log --oneline
+
+# 출력 예시 (--oneline):
+# a3b8c21 로그인 페이지 UI 추가
+# f9d2e10 프로젝트 초기 설정
+# 5a1c4b8 README 작성</code></pre>
+        </div>
+
+        <!-- git branch -->
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git branch</div>
+              <div class="command-short-desc">브랜치를 조회하거나 생성합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">브랜치는 독립적인 작업 공간입니다. 메인 코드에 영향 없이 새 기능을 개발할 수 있습니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">새 기능 개발, 버그 수정 등을 독립 공간에서 안전하게 작업합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">브랜치 이름만 적으면 현재 커밋에서 새 브랜치가 만들어집니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># 브랜치 목록 보기 (* 표시가 현재 브랜치)
+git branch
+
+# 새 브랜치 만들기
+git branch feature/login
+
+# 브랜치 삭제 (merge 완료 후)
+git branch -d feature/login</code></pre>
+        </div>
+
+        <!-- git switch / checkout -->
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git switch &nbsp;<span style="font-weight:400;font-size:13px;color:var(--color-text-secondary)">/ git checkout</span></div>
+              <div class="command-short-desc">다른 브랜치로 이동합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">현재 작업 중인 브랜치를 바꿉니다. <code>git switch</code>는 최신 방식, <code>git checkout</code>은 구버전 방식입니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">다른 브랜치로 이동해서 해당 브랜치의 코드 상태로 전환합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">HEAD(현재 위치)가 해당 브랜치로 이동하고, 파일이 그 브랜치의 상태로 바뀝니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># feature/login 브랜치로 이동 (최신 방식)
+git switch feature/login
+
+# 브랜치 생성과 동시에 이동
+git switch -c feature/signup
+
+# 구버전 방식 (동일한 결과)
+git checkout feature/login
+git checkout -b feature/signup</code></pre>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- 실습 -->
+        <div class="practice-block">
+          <div class="practice-header">
+            <div class="practice-title">🛠️ 실습 1: 첫 번째 커밋 만들기</div>
+          </div>
+          <div class="practice-body">
+            <div class="practice-task">
+              새 폴더를 만들고 Git 저장소를 초기화한 뒤, 파일을 추가하고 첫 커밋을 만들어보세요.
+              <ol style="margin-top:10px;">
+                <li>터미널에서 <code>mkdir my-project && cd my-project</code>로 새 폴더를 만들고 이동</li>
+                <li><code>git init</code>으로 저장소 초기화</li>
+                <li><code>echo "Hello Git" > README.md</code>로 파일 생성</li>
+                <li><code>git add README.md</code>로 Staging</li>
+                <li><code>git commit -m "첫 번째 커밋"</code>으로 커밋 생성</li>
+                <li><code>git log --oneline</code>으로 확인</li>
+              </ol>
+            </div>
+            <button class="hint-toggle">💡 힌트 보기</button>
+            <div class="hint-content">
+              <p>각 단계 실행 후 <code>git status</code>를 입력해보세요. 파일 상태가 어떻게 변하는지 확인하면 이해가 빠릅니다. <code>git add</code> 전후, <code>git commit</code> 전후로 각각 실행해보세요.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <div class="checklist-title">✅ 커맨드 체크리스트</div>
+          <ul>
+            <li><input type="checkbox" id="c3-1" /><label for="c3-1"><code>git init</code>으로 저장소를 초기화할 수 있다</label></li>
+            <li><input type="checkbox" id="c3-2" /><label for="c3-2"><code>git add</code>와 <code>git commit</code>의 차이를 안다</label></li>
+            <li><input type="checkbox" id="c3-3" /><label for="c3-3"><code>git log --oneline</code>으로 커밋 히스토리를 확인할 수 있다</label></li>
+            <li><input type="checkbox" id="c3-4" /><label for="c3-4">브랜치를 만들고 이동할 수 있다</label></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== 모듈 4: 브랜치 & PR ===== -->
+      <section class="guide-section" id="branch-pr">
+        <div class="section-header">
+          <div class="section-number">4</div>
+          <div>
+            <div class="section-title">브랜치 &amp; Pull Request</div>
+            <div class="section-subtitle">실제 팀 협업에서 사용하는 브랜치 전략과 PR 워크플로우</div>
+          </div>
+        </div>
+
+        <p>
+          Git이 강력한 이유 중 하나는 <strong>브랜치(Branch)</strong>입니다. 브랜치를 사용하면 메인 코드를 건드리지 않고, 독립된 공간에서 자유롭게 작업할 수 있습니다. 작업이 완성되면 PR(Pull Request)을 통해 코드 리뷰를 받고 메인 코드와 합칩니다.
+        </p>
+
+        <div class="tip-box">
+          <div class="box-icon">🌿</div>
+          <div class="box-content">
+            <strong>브랜치는 "평행 우주"입니다</strong>
+            <p>브랜치를 만드는 순간, 메인 코드와 독립된 복사본이 생깁니다. 이 복사본에서 마음껏 수정하고 실험할 수 있습니다. 잘못되어도 메인 코드에 영향이 없고, 잘 되면 merge해서 합치면 됩니다.</p>
+          </div>
+        </div>
+
+        <h2>브랜치 다이어그램</h2>
+        <p>아래 다이어그램은 <code>main</code> 브랜치에서 <code>feature/login</code> 브랜치를 분기해서 작업하고, PR을 통해 다시 합치는 흐름을 보여줍니다.</p>
+
+        <div class="diagram-block">
+          <div class="diagram-title">브랜치 분기 및 머지 흐름</div>
+          <div class="branch-diagram" style="min-width:380px;">
+            <!-- main 브랜치 -->
+            <div class="branch-row">
+              <div class="branch-label">main</div>
+              <div class="commit-dot main-dot" title="초기 커밋"></div>
+              <div class="commit-line main-line"></div>
+              <div class="commit-dot main-dot" title="커밋 A"></div>
+              <div class="commit-line main-line"></div>
+              <div class="commit-dot main-dot" title="커밋 B"></div>
+              <div class="commit-line main-line" style="min-width:60px;max-width:60px;"></div>
+              <!-- 머지 커밋 -->
+              <div class="commit-dot merge-dot" title="merge 커밋"></div>
+              <div class="commit-line main-line"></div>
+              <div class="commit-dot main-dot" title="HEAD"></div>
+              <div class="commit-tag">HEAD</div>
+            </div>
+            <!-- 분기선 표시용 -->
+            <div style="display:flex;align-items:flex-start;padding-left:80px;margin:-4px 0;">
+              <div style="margin-left:44px;width:2px;height:24px;background:#7c3aed;opacity:0.4;"></div>
+              <div style="flex:1;"></div>
+              <div style="margin-right:62px;width:2px;height:24px;background:#059669;opacity:0.4;"></div>
+            </div>
+            <!-- feature 브랜치 -->
+            <div class="branch-row">
+              <div class="branch-label" style="color:#7c3aed;">feature</div>
+              <div style="min-width:14px;max-width:14px;"></div><!-- 첫 main dot 너비 맞춤 -->
+              <div class="commit-line empty"></div>
+              <div class="commit-dot feature-dot" title="feature 시작"></div>
+              <div class="commit-line feature-line"></div>
+              <div class="commit-dot feature-dot" title="기능 개발"></div>
+              <div class="commit-line feature-line"></div>
+              <div class="commit-dot feature-dot" title="기능 완성"></div>
+              <div style="flex:1;"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:24px;margin-top:20px;flex-wrap:wrap;">
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);">
+              <span style="width:12px;height:12px;border-radius:50%;background:var(--color-primary);display:inline-block;"></span> main 커밋
+            </span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);">
+              <span style="width:12px;height:12px;border-radius:50%;background:#7c3aed;display:inline-block;"></span> feature 커밋
+            </span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);">
+              <span style="width:14px;height:14px;border-radius:50%;background:#059669;display:inline-block;"></span> merge 커밋
+            </span>
+          </div>
+        </div>
+
+        <hr class="divider" />
+        <h2>단계별 협업 워크플로우</h2>
+
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <div class="step-title">새 브랜치 만들기</div>
+              <div class="step-desc">
+                작업하기 전에 항상 새 브랜치를 만듭니다. 브랜치 이름은 작업 내용을 설명하도록 짓습니다.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># main에서 새 브랜치 생성 후 이동
+git switch -c feature/login</code></pre>
+        </div>
+
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <div class="step-title">작업 후 커밋</div>
+              <div class="step-desc">
+                파일을 수정하고 <code>git add</code> + <code>git commit</code>으로 변경사항을 기록합니다. 작은 단위로 여러 번 커밋하는 것이 좋습니다.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash">git add login.html login.css
+git commit -m "로그인 폼 HTML/CSS 추가"
+
+# 추가 작업 후 또 커밋
+git add login.js
+git commit -m "로그인 폼 유효성 검사 로직 추가"</code></pre>
+        </div>
+
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <div class="step-title">리모트에 푸시</div>
+              <div class="step-desc">
+                내 브랜치를 GitHub(리모트 저장소)에 올립니다. 처음 푸시할 때는 <code>-u origin</code>을 붙여야 합니다.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># 처음 푸시할 때 (-u는 "upstream" 설정)
+git push -u origin feature/login
+
+# 이후 추가 푸시할 때
+git push</code></pre>
+        </div>
+
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <div class="step-title">GitHub에서 Pull Request 생성</div>
+              <div class="step-desc">
+                GitHub 레포지토리 페이지에 접속하면 방금 푸시한 브랜치를 감지해 <strong>"Compare &amp; pull request"</strong> 버튼이 나타납니다. 클릭해서 PR을 생성하세요.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <div class="box-icon">ℹ️</div>
+          <div class="box-content">
+            <strong>Pull Request란 무엇인가요?</strong>
+            <p>PR(Pull Request)은 "내 브랜치의 변경사항을 메인 브랜치에 <strong>당겨서 합쳐달라(Pull + Merge)</strong>는 요청"입니다. 팀원들이 코드를 검토(Code Review)하고, 문제가 없으면 Merge 버튼을 눌러 합칩니다.</p>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step-card">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <div class="step-title">코드 리뷰 및 Merge</div>
+              <div class="step-desc">
+                팀원들이 코드를 확인하고 승인(Approve)하면, GitHub에서 <strong>"Merge pull request"</strong> 버튼을 눌러 <code>main</code> 브랜치에 합칩니다.
+              </div>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-number">6</div>
+            <div class="step-content">
+              <div class="step-title">로컬 main 업데이트</div>
+              <div class="step-desc">
+                GitHub에서 merge가 완료됐으면, 내 로컬 컴퓨터의 <code>main</code> 브랜치도 최신 상태로 업데이트합니다.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># main 브랜치로 돌아가기
+git switch main
+
+# 리모트의 최신 변경사항 가져오기
+git pull
+
+# 작업 완료한 브랜치 삭제 (선택사항)
+git branch -d feature/login</code></pre>
+        </div>
+
+        <hr class="divider" />
+        <h2>브랜치 이름 컨벤션</h2>
+        <p>팀마다 다르지만, 아래와 같이 접두사를 붙이는 방식이 널리 사용됩니다.</p>
+
+        <table class="kv-table">
+          <thead><tr><th>접두사</th><th>용도</th><th>예시</th></tr></thead>
+          <tbody>
+            <tr><td>feature/</td><td>새 기능 개발</td><td>feature/user-login, feature/dark-mode</td></tr>
+            <tr><td>fix/</td><td>버그 수정</td><td>fix/login-crash, fix/typo-header</td></tr>
+            <tr><td>docs/</td><td>문서 수정</td><td>docs/update-readme</td></tr>
+            <tr><td>refactor/</td><td>코드 구조 개선 (기능 변경 없음)</td><td>refactor/auth-module</td></tr>
+            <tr><td>hotfix/</td><td>긴급 버그 수정</td><td>hotfix/payment-error</td></tr>
+          </tbody>
+        </table>
+
+        <div class="warn-box">
+          <div class="box-icon">⚠️</div>
+          <div class="box-content">
+            <strong>main 브랜치에서 직접 작업하지 마세요</strong>
+            <p><code>main</code>(또는 <code>master</code>) 브랜치는 배포 가능한 안정적인 코드를 유지하는 공간입니다. 작업은 항상 별도 브랜치에서 하고 PR을 통해 합치세요. 혼자 작업하더라도 이 습관을 들이면 나중에 협업 시 자연스럽게 적용됩니다.</p>
+          </div>
+        </div>
+
+        <!-- 실습 -->
+        <div class="practice-block">
+          <div class="practice-header">
+            <div class="practice-title">🛠️ 실습 2: 브랜치 만들고 merge하기</div>
+          </div>
+          <div class="practice-body">
+            <div class="practice-task">
+              앞서 만든 <code>my-project</code> 저장소에서 브랜치를 만들어 파일을 수정한 뒤, <code>main</code>에 merge 해보세요.
+              <ol style="margin-top:10px;">
+                <li><code>git switch -c feature/add-info</code>로 새 브랜치 생성</li>
+                <li><code>echo "작성자: 홍길동" >> README.md</code>로 파일 수정</li>
+                <li><code>git add README.md && git commit -m "README에 작성자 정보 추가"</code></li>
+                <li><code>git switch main</code>으로 main 복귀</li>
+                <li><code>git merge feature/add-info</code>로 merge</li>
+                <li><code>git log --oneline</code>으로 커밋 이력 확인</li>
+              </ol>
+            </div>
+            <button class="hint-toggle">💡 힌트 보기</button>
+            <div class="hint-content">
+              <p><code>git merge</code>는 현재 브랜치에 다른 브랜치의 변경사항을 가져오는 명령어입니다. <code>main</code>에서 실행하면 <code>feature</code> 브랜치의 커밋이 <code>main</code>에 합쳐집니다. merge 후 <code>git log --oneline --graph</code>를 실행하면 브랜치 그래프를 볼 수 있습니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <div class="checklist-title">✅ 브랜치 & PR 체크리스트</div>
+          <ul>
+            <li><input type="checkbox" id="c4-1" /><label for="c4-1">브랜치를 만들고 이동할 수 있다</label></li>
+            <li><input type="checkbox" id="c4-2" /><label for="c4-2">feature 브랜치에서 커밋을 만들 수 있다</label></li>
+            <li><input type="checkbox" id="c4-3" /><label for="c4-3">PR이 무엇인지, 왜 쓰는지 설명할 수 있다</label></li>
+            <li><input type="checkbox" id="c4-4" /><label for="c4-4">merge 후 로컬 main을 업데이트할 수 있다</label></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== 모듈 5: 로컬 & 리모트 ===== -->
+      <section class="guide-section" id="local-remote">
+        <div class="section-header">
+          <div class="section-number">5</div>
+          <div>
+            <div class="section-title">로컬 &amp; 리모트</div>
+            <div class="section-subtitle">내 컴퓨터(로컬)와 GitHub(리모트)의 관계</div>
+          </div>
+        </div>
+
+        <p>
+          Git을 혼자 쓸 때는 내 컴퓨터에서만 작업하지만, 협업을 하거나 코드를 백업하려면 <strong>인터넷에 있는 원격 저장소(리모트)</strong>와 연결해야 합니다. 가장 널리 쓰이는 리모트 서비스가 <strong>GitHub</strong>입니다.
+        </p>
+
+        <div class="diagram-block">
+          <div class="diagram-title">로컬과 리모트의 관계</div>
+          <div class="local-remote-diagram">
+            <div class="env-box local">
+              <div class="env-box-icon">💻</div>
+              <div class="env-box-title">로컬 (Local)</div>
+              <div class="env-box-desc">내 컴퓨터<br>실제로 작업하는 곳</div>
+            </div>
+            <div class="sync-arrows">
+              <div class="sync-arrow push">
+                <span>git push →</span>
+              </div>
+              <div style="width:80px;height:2px;background:var(--color-border);"></div>
+              <div class="sync-arrow pull">
+                <span>← git pull</span>
+              </div>
+            </div>
+            <div class="env-box remote">
+              <div class="env-box-icon">☁️</div>
+              <div class="env-box-title">리모트 (Remote)</div>
+              <div class="env-box-desc">GitHub 서버<br>코드를 공유하고 백업하는 곳</div>
+            </div>
+          </div>
+        </div>
+
+        <h2>핵심 명령어</h2>
+
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git clone</div>
+              <div class="command-short-desc">리모트 저장소를 로컬로 복사합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">GitHub 등 리모트 저장소의 전체 내용을 내 컴퓨터로 다운로드합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">남의 프로젝트나 기존 팀 프로젝트에 처음 참여할 때 사용합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">새 폴더가 생기고 리모트의 모든 코드와 커밋 이력이 복사됩니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash">git clone https://github.com/username/repository-name.git
+
+# 폴더 이름을 직접 지정하고 싶을 때
+git clone https://github.com/username/repository-name.git my-folder</code></pre>
+        </div>
+
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git remote add</div>
+              <div class="command-short-desc">리모트 저장소를 연결합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">로컬 저장소에 리모트 저장소 주소를 등록합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value"><code>git init</code>으로 만든 로컬 저장소를 GitHub의 새 레포지토리와 연결할 때 사용합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value"><code>origin</code>이라는 이름으로 리모트 주소가 저장됩니다. 이후 <code>git push origin ...</code>처럼 사용합니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash">git remote add origin https://github.com/username/repository-name.git
+
+# 현재 연결된 리모트 확인
+git remote -v</code></pre>
+        </div>
+
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git push</div>
+              <div class="command-short-desc">로컬 커밋을 리모트로 업로드합니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">로컬에서 만든 커밋들을 리모트 저장소에 올립니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">내 작업을 백업하거나 팀원들과 공유할 때 사용합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">GitHub에서 내 커밋들을 볼 수 있게 됩니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># 현재 브랜치를 origin 리모트에 푸시 (최초 1회)
+git push -u origin main
+
+# 이후 추가 푸시
+git push</code></pre>
+        </div>
+
+        <div class="command-card">
+          <div class="command-card-header">
+            <div>
+              <div class="command-name">git pull</div>
+              <div class="command-short-desc">리모트 변경사항을 로컬로 가져옵니다</div>
+            </div>
+          </div>
+          <div class="command-body">
+            <div class="command-meta">
+              <div class="command-meta-label">📖 정의</div>
+              <div class="command-meta-value">리모트의 최신 커밋을 로컬로 다운로드하고 현재 브랜치에 merge합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">🎯 의도</div>
+              <div class="command-meta-value">팀원이 push한 새 코드를 내 로컬에 반영할 때 사용합니다.</div>
+            </div>
+            <div class="command-meta">
+              <div class="command-meta-label">✅ 결과</div>
+              <div class="command-meta-value">로컬 브랜치가 리모트의 최신 상태와 동기화됩니다.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-lang">bash</span><button class="code-copy-btn">📋 복사</button></div>
+          <pre><code class="language-bash"># 현재 브랜치의 리모트 변경사항 가져오기
+git pull
+
+# 특정 리모트/브랜치 지정
+git pull origin main</code></pre>
+        </div>
+
+        <div class="tip-box">
+          <div class="box-icon">💡</div>
+          <div class="box-content">
+            <strong>"origin"은 관례적인 이름입니다</strong>
+            <p><code>origin</code>은 리모트 저장소의 별명(alias)일 뿐입니다. <code>git remote add github https://...처럼</code> 다른 이름도 가능합니다. 하지만 모든 팀에서 <code>origin</code>을 기본 리모트 이름으로 사용하므로, 이 관례를 따르는 것이 좋습니다.</p>
+          </div>
+        </div>
+
+        <!-- 실습 -->
+        <div class="practice-block">
+          <div class="practice-header">
+            <div class="practice-title">🛠️ 실습 3: GitHub에 푸시하기</div>
+          </div>
+          <div class="practice-body">
+            <div class="practice-task">
+              GitHub에 새 레포지토리를 만들고 로컬 프로젝트를 연결해서 push 해보세요.
+              <ol style="margin-top:10px;">
+                <li>GitHub에 로그인 후 <strong>New repository</strong> 버튼으로 새 레포 생성 (README 파일 없이)</li>
+                <li>로컬 프로젝트에서 <code>git remote add origin &lt;레포 URL&gt;</code></li>
+                <li><code>git push -u origin main</code>으로 푸시</li>
+                <li>GitHub 페이지를 새로고침해서 코드가 올라갔는지 확인</li>
+              </ol>
+            </div>
+            <button class="hint-toggle">💡 힌트 보기</button>
+            <div class="hint-content">
+              <p>GitHub에서 새 레포를 만들면 페이지에 <code>git remote add origin ...</code> 명령어가 적혀 있습니다. 그것을 그대로 복사해서 실행하면 됩니다. <code>git push -u origin main</code>에서 <code>-u</code>는 이후 <code>git push</code>만 입력해도 같은 곳에 push되도록 기본 설정을 저장하는 옵션입니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <div class="checklist-title">✅ 로컬 &amp; 리모트 체크리스트</div>
+          <ul>
+            <li><input type="checkbox" id="c5-1" /><label for="c5-1">로컬과 리모트 저장소의 차이를 설명할 수 있다</label></li>
+            <li><input type="checkbox" id="c5-2" /><label for="c5-2"><code>git push</code>와 <code>git pull</code>의 차이를 안다</label></li>
+            <li><input type="checkbox" id="c5-3" /><label for="c5-3">GitHub에 코드를 올릴 수 있다</label></li>
+            <li><input type="checkbox" id="c5-4" /><label for="c5-4"><code>git clone</code>으로 기존 레포를 복사할 수 있다</label></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== 모듈 6: 마무리 ===== -->
+      <section class="guide-section" id="wrap-up">
+        <div class="section-header">
+          <div class="section-number">6</div>
+          <div>
+            <div class="section-title">마무리</div>
+            <div class="section-subtitle">지금까지 배운 것 복습과 다음 단계 안내</div>
+          </div>
+        </div>
+
+        <p>축하합니다! 🎉 Git의 핵심 개념부터 실제 협업 워크플로우까지 모두 살펴봤습니다. 지금까지 배운 내용을 간략히 복습해봅시다.</p>
+
+        <div class="accordion">
+          <div class="accordion-item open">
+            <div class="accordion-header" role="button" aria-expanded="true">
+              <span class="accordion-title">📋 전체 내용 요약</span>
+              <span class="accordion-chevron">▼</span>
+            </div>
+            <div class="accordion-body">
+              <table class="kv-table">
+                <thead><tr><th>주제</th><th>핵심 내용</th></tr></thead>
+                <tbody>
+                  <tr><td>Git이란?</td><td>변경 이력을 추적하고 협업을 가능하게 하는 버전 관리 시스템. Git ≠ GitHub.</td></tr>
+                  <tr><td>설치</td><td>Windows: Git for Windows / macOS: Homebrew 또는 Xcode CLT. 설치 후 user.name, user.email 설정 필수.</td></tr>
+                  <tr><td>기본 커맨드</td><td>init → add → commit → log 순서로 파일을 추적하고 기록한다.</td></tr>
+                  <tr><td>브랜치 & PR</td><td>feature 브랜치에서 작업 → push → PR → 리뷰 → merge → main pull. main에서 직접 작업 금지.</td></tr>
+                  <tr><td>로컬 & 리모트</td><td>로컬에서 작업하고, push로 리모트에 올리고, pull로 최신 내용을 받는다. clone은 최초 1회.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider" />
+        <h2>다음으로 배우면 좋은 것들</h2>
+
+        <div class="next-cards">
+          <div class="next-card">
+            <div class="next-card-icon">🚫</div>
+            <div class="next-card-title">.gitignore</div>
+            <div class="next-card-desc">Git이 추적하지 않을 파일 목록을 설정하세요. <code>node_modules</code>, <code>.env</code> 파일 등을 제외합니다.</div>
+          </div>
+          <div class="next-card">
+            <div class="next-card-icon">🔀</div>
+            <div class="next-card-title">Rebase</div>
+            <div class="next-card-desc">커밋 히스토리를 깔끔하게 정리하는 고급 기법. merge와 차이점을 이해해보세요.</div>
+          </div>
+          <div class="next-card">
+            <div class="next-card-icon">⚡️</div>
+            <div class="next-card-title">Conflict 해결</div>
+            <div class="next-card-desc">두 브랜치에서 같은 부분을 수정했을 때 발생하는 충돌을 직접 해결하는 방법을 배워보세요.</div>
+          </div>
+          <div class="next-card">
+            <div class="next-card-icon">📦</div>
+            <div class="next-card-title">Stash</div>
+            <div class="next-card-desc">커밋하기 전 변경사항을 임시 저장하고, 나중에 꺼낼 수 있는 기능입니다.</div>
+          </div>
+          <div class="next-card">
+            <div class="next-card-icon">🤖</div>
+            <div class="next-card-title">GitHub Actions</div>
+            <div class="next-card-desc">push, PR 등의 이벤트에 자동으로 테스트나 배포를 실행하는 CI/CD 파이프라인을 만들어보세요.</div>
+          </div>
+          <div class="next-card">
+            <div class="next-card-icon">🏷️</div>
+            <div class="next-card-title">Tags & Release</div>
+            <div class="next-card-desc">특정 커밋에 버전 태그를 달고 GitHub Release로 공식 배포판을 관리하는 방법을 알아보세요.</div>
+          </div>
+        </div>
+
+        <hr class="divider" />
+        <h2>유용한 참고 자료</h2>
+        <ul>
+          <li><a href="https://git-scm.com/doc" target="_blank" rel="noopener">공식 Git 문서 (git-scm.com)</a> — 가장 정확한 레퍼런스</li>
+          <li><a href="https://docs.github.com/ko" target="_blank" rel="noopener">GitHub 공식 문서 (한국어)</a> — PR, Issues, Actions 등 GitHub 기능 안내</li>
+          <li><a href="https://learngitbranching.js.org/?locale=ko" target="_blank" rel="noopener">Learn Git Branching</a> — 브랜치 개념을 시각적으로 배울 수 있는 인터랙티브 게임</li>
+          <li><a href="https://ohshitgit.com/ko" target="_blank" rel="noopener">Oh Shit, Git!? (한국어)</a> — 실수했을 때 해결법 모음</li>
+        </ul>
+
+        <div class="tip-box" style="margin-top:32px;">
+          <div class="box-icon">🚀</div>
+          <div class="box-content">
+            <strong>가장 좋은 공부법은 직접 해보는 것입니다</strong>
+            <p>지금 바로 GitHub에 계정을 만들고, 작은 프로젝트라도 레포지토리를 만들어서 매일 커밋해보세요. 처음에는 혼자라도 브랜치를 만들어 PR 워크플로우를 연습하면 빠르게 익숙해집니다.</p>
+          </div>
+        </div>
+
+        <div class="checklist">
+          <div class="checklist-title">✅ 최종 체크리스트</div>
+          <ul>
+            <li><input type="checkbox" id="c6-1" /><label for="c6-1">GitHub 계정을 만들었다</label></li>
+            <li><input type="checkbox" id="c6-2" /><label for="c6-2">내 컴퓨터에서 Git을 사용해서 커밋을 만들어봤다</label></li>
+            <li><input type="checkbox" id="c6-3" /><label for="c6-3">GitHub에 레포지토리를 만들고 push 해봤다</label></li>
+            <li><input type="checkbox" id="c6-4" /><label for="c6-4">브랜치를 만들고 merge 해봤다</label></li>
+            <li><input type="checkbox" id="c6-5" /><label for="c6-5">다음 학습 주제 중 하나를 선택했다</label></li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <p class="footer-text">Git 완전 정복 — 초심자를 위한 가이드</p>
+      <div class="footer-links">
+        <a href="https://git-scm.com" target="_blank" rel="noopener">git-scm.com</a>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://learngitbranching.js.org/?locale=ko" target="_blank" rel="noopener">Learn Git Branching</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Prism.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
